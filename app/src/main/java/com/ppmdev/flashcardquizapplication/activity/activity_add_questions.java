@@ -13,24 +13,25 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.ppmdev.flashcardquizapplication.R;
 
-public class activity_main extends AppCompatActivity {
-    private Button btnAdd;
+public class activity_add_questions extends AppCompatActivity {
+
+    private Button btnAddQn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_add_questions);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        btnAdd=findViewById(R.id.btnAddqn);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        btnAddQn=findViewById(R.id.btnAddQnFromQnPage);
+        btnAddQn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent start = new Intent(activity_main.this, activity_add_questions.class);
+                Intent start = new Intent(activity_add_questions.this, activity_main.class);
                 startActivity(start);
             }
         });

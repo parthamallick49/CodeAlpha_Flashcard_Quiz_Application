@@ -12,42 +12,51 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ppmdev.flashcardquizapplication.R;
-import com.ppmdev.flashcardquizapplication.adapter.QuestionsAdapter;
+import com.ppmdev.flashcardquizapplication.adapter.QuestionAdapter;
+import com.ppmdev.flashcardquizapplication.database.FirebaseDatabaseHelper;
 import com.ppmdev.flashcardquizapplication.model.Question;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class activity_main extends AppCompatActivity {
-    private Button btnAdd;
-    private Button btnStartQuiz;
-    private RecyclerView recyclerView;
-    private QuestionsAdapter questionsAdapter;
+
+    private RecyclerView rvQuestions;
+    private Button btnAddQuestion;
+    private QuestionAdapter questionAdapter;
     private List<Question> questionList;
-    private DatabaseReference databaseReference;
+    private FirebaseDatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnAdd = findViewById(R.id.btnAddqn);
-        btnStartQuiz = findViewById(R.id.btnStartQuiz);
-        recyclerView = findViewById(R.id.rvQuestions);
+        rvQuestions = findViewById(R.id.rvQuestions);
+        btnAddQuestion = findViewById(R.id.btnAddqn);
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rvQuestions.setLayoutManager(new LinearLayoutManager(this));
         questionList = new ArrayList<>();
-        questionsAdapter = new QuestionsAdapter(questionList);
-        recyclerView.setAdapter(questionsAdapter);
+        questionAdapter = new QuestionAdapter(questionList);
+        rvQuestions.setAdapter(questionAdapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("questions");
+        dbHelper = new FirebaseDatabaseHelper();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        loadQuestions();
+
+        btnAddQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity_main.this, activity_add_questions.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void loadQuestions() {
+        dbHelper.getQuestions().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 questionList.clear();
@@ -55,28 +64,12 @@ public class activity_main extends AppCompatActivity {
                     Question question = snapshot.getValue(Question.class);
                     questionList.add(question);
                 }
-                questionsAdapter.notifyDataSetChanged();
+                questionAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle error
-            }
-        });
-
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent start = new Intent(activity_main.this, activity_add_questions.class);
-                startActivity(start);
-            }
-        });
-
-        btnStartQuiz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent start = new Intent(activity_main.this, QuizActivity.class);
-                startActivity(start);
             }
         });
     }

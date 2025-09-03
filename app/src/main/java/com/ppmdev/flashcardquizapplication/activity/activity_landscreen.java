@@ -26,15 +26,15 @@ public class activity_landscreen extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-
         });
 
-        btnStart =findViewById(R.id.btStart);
+        btnStart = findViewById(R.id.btnStart);
+
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent start = new Intent(activity_landscreen.this, activity_main.class);
-                startActivity(start);
+                Intent intent = new Intent(activity_landscreen.this, activity_main.class);
+                startActivity(intent);
             }
         });
     }
